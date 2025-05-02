@@ -1,4 +1,3 @@
-// pages/CountryPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -39,14 +38,18 @@ const CountryPage = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" mt={5}>
-        <CircularProgress />
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress size={60} />
       </Box>
     );
   }
 
   if (!country) {
-    return <Typography variant="h6">Country not found</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <Typography variant="h4">Country not found</Typography>
+      </Box>
+    );
   }
 
   const {
@@ -59,19 +62,39 @@ const CountryPage = () => {
   } = country;
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={() => navigate("/")}>
+    <Container sx={{ mt: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Button 
+        variant="outlined" 
+        startIcon={<ArrowBackIcon />} 
+        onClick={() => navigate("/")}
+        sx={{ alignSelf: "flex-start", mb: 3, fontSize: "1.1rem", py: 1 }}
+      >
         Back
       </Button>
-      <Card sx={{ maxWidth: 600, margin: "2rem auto" }}>
-        <CardMedia component="img" height="300" image={flags?.png} alt={countryName?.common} />
-        <CardContent>
-          <Typography variant="h4">{countryName?.common}</Typography>
-          <Typography variant="subtitle1">Official Name: {countryName?.official}</Typography>
-          <Typography variant="body1">Capital: {capital?.[0]}</Typography>
-          <Typography variant="body1">Region: {region}</Typography>
-          <Typography variant="body1">Population: {population.toLocaleString()}</Typography>
-          <Typography variant="body1">
+      <Card sx={{ width: "100%", maxWidth: 800, boxShadow: 3 }}>
+        <CardMedia 
+          component="img" 
+          height="400" 
+          image={flags?.png} 
+          alt={countryName?.common} 
+        />
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h3" sx={{ mb: 2, fontWeight: "bold" }}>
+            {countryName?.common}
+          </Typography>
+          <Typography variant="h6" sx={{ mb: 3 }}>
+            Official Name: {countryName?.official}
+          </Typography>
+          <Typography variant="h5" sx={{ my: 1 }}>
+            Capital: {capital?.[0]}
+          </Typography>
+          <Typography variant="h5" sx={{ my: 1 }}>
+            Region: {region}
+          </Typography>
+          <Typography variant="h5" sx={{ my: 1 }}>
+            Population: {population.toLocaleString()}
+          </Typography>
+          <Typography variant="h5" sx={{ my: 1 }}>
             Languages: {languages ? Object.values(languages).join(", ") : "N/A"}
           </Typography>
         </CardContent>

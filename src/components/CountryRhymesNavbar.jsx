@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ Import useNavigate
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,39 +11,29 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
-// Navigation Pages
 const pages = ['Home', 'About Us'];
 
 function CountryRhymesNavbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const navigate = useNavigate(); // ✅ Hook for navigation
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page) => {
     setAnchorElNav(null);
+    if (page === 'Home') navigate('/home');
+    if (page === 'About Us') navigate('/aboutus');
   };
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        bgcolor: '#FF5B00',
-        boxShadow: 'none',
-        color: 'white',
-      }}
-    >
-      <Container maxWidth="xl">
+    <AppBar position="static" sx={{ bgcolor: '#FF5B00', boxShadow: 'none', color: 'white' }}>
+      <Container maxWidth={false} disableGutters>
         <Toolbar disableGutters>
+
           {/* Mobile Logo */}
-          <Box
-            sx={{
-              display: { xs: 'flex', md: 'none' },
-              mr: 1,
-              flexGrow: 1,
-            }}
-          >
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, flexGrow: 1 }}>
             <Typography
               variant="h6"
               noWrap
@@ -77,37 +68,23 @@ function CountryRhymesNavbar() {
             <Menu
               id="menu-navbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
               keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+              onClose={() => setAnchorElNav(null)}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center" sx={{ color: 'black' }}>
-                    {page}
-                  </Typography>
+                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
+                  <Typography textAlign="center" sx={{ color: 'black' }}>{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          {/* Desktop Logo & App Name */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              flexGrow: 1,
-            }}
-          >
+          {/* Desktop Logo */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', flexGrow: 1 }}>
             <Typography
               variant="h6"
               noWrap
@@ -127,12 +104,12 @@ function CountryRhymesNavbar() {
             </Typography>
           </Box>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation */}
           <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleCloseNavMenu(page)}
                 sx={{
                   my: 2,
                   color: 'white',
@@ -147,6 +124,7 @@ function CountryRhymesNavbar() {
               </Button>
             ))}
           </Box>
+
         </Toolbar>
       </Container>
     </AppBar>

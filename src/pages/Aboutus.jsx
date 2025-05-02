@@ -1,11 +1,14 @@
 import React from 'react';
 import { Container, Grid, Typography, Box, Paper } from '@mui/material';
-import worldImage from '../assets/world.png';
+import CountryRhymesNavbar from '../components/CountryRhymesNavbar';
+import Earth from '../components/Earth'; // Import the globe component
 
 const AboutUs = () => {
   return (
-    <Container maxWidth={false} disableGutters>
-      {/* Orange Banner Section - Expanded to full width */}
+    <>
+      <CountryRhymesNavbar />
+      
+      {/* Orange Banner Section */}
       <Box
         sx={{
           display: 'flex',
@@ -19,7 +22,11 @@ const AboutUs = () => {
         }}
       >
         {/* Content area */}
-        <Box sx={{ maxWidth: '60%', zIndex: 2 }}>
+        <Box sx={{ 
+          maxWidth: '60%', 
+          zIndex: 2,
+          alignSelf: 'center'
+        }}>
           <Typography variant="h3" fontWeight={700} color="white" mb={4}>
             Bringing the World Closer to You
           </Typography>
@@ -28,39 +35,38 @@ const AboutUs = () => {
           </Typography>
         </Box>
         
-        {/* World image positioned to the right but a bit to the left */}
+        {/* Interactive Globe */}
         <Box
           sx={{
             position: 'absolute',
-            right: '10%', // Moved to the left from the right edge
+            right: { xs: '5%', md: '10%' },
             top: '50%',
             transform: 'translateY(-50%)',
-            height: '80%',
+            height: { xs: '200px', md: '300px' },
+            width: { xs: '200px', md: '300px' },
             zIndex: 1,
+            opacity: 0.95,
+            pointerEvents: 'none',
+            '& canvas': {
+              borderRadius: '50%',
+              boxShadow: '0 0 20px rgba(255, 91, 0, 0.4)',
+            }
           }}
         >
-          <img 
-            src={worldImage} 
-            alt="World Map" 
-            style={{ 
-              height: '100%', 
-              objectFit: 'contain',
-              opacity: 0.85
-            }} 
-          />
+          <Earth />
         </Box>
       </Box>
 
       {/* White Content Section */}
       <Container maxWidth="xl">
         <Box sx={{ mt: 8, mb: 4 }}>
-          {/* App Overview - Now in a light orange box */}
+          {/* App Overview - Light orange box */}
           <Paper
             elevation={2}
             sx={{
               p: 4,
               mb: 6,
-              backgroundColor: '#FFF0E6', // Light orange
+              backgroundColor: '#FFF0E6',
               borderRadius: '16px',
             }}
           >
@@ -76,15 +82,20 @@ const AboutUs = () => {
             </Grid>
           </Paper>
 
-          {/* Feature Sections - Perfectly aligned horizontally */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
+          {/* Feature Sections */}
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', md: 'row' }, 
+            gap: 4,
+            justifyContent: 'space-between'
+          }}>
             {/* Search Country */}
             <Paper
               elevation={2}
               sx={{
                 p: 4,
                 flex: 1,
-                backgroundColor: '#FFF0E6', // Light orange
+                backgroundColor: '#FFF0E6',
                 borderRadius: '16px',
                 transition: 'all 0.3s ease',
                 '&:hover': {
@@ -123,7 +134,7 @@ const AboutUs = () => {
               sx={{
                 p: 4,
                 flex: 1,
-                backgroundColor: '#FFF0E6', // Light orange
+                backgroundColor: '#FFF0E6',
                 borderRadius: '16px',
                 transition: 'all 0.3s ease',
                 '&:hover': {
@@ -162,7 +173,7 @@ const AboutUs = () => {
               sx={{
                 p: 4,
                 flex: 1,
-                backgroundColor: '#FFF0E6', // Light orange
+                backgroundColor: '#FFF0E6',
                 borderRadius: '16px',
                 transition: 'all 0.3s ease',
                 '&:hover': {
@@ -197,7 +208,7 @@ const AboutUs = () => {
           </Box>
         </Box>
       </Container>
-    </Container>
+    </>
   );
 };
 
