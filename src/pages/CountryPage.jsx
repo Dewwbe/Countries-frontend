@@ -1,74 +1,101 @@
-// src/components/CountryCard.jsx
-import React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+} from "@mui/material";
 
-const CountryCard = ({ country }) => {
-  const commonName = country.name?.common || "Unknown";
-  const population = country.population || 0;
-  const region = country.region || "N/A";
-  const languages = country.languages
-    ? Object.values(country.languages).join(", ")
-    : "N/A";
-  const flag = country.flags?.png || country.flags?.svg || "";
-  const capital = country.capital?.[0] || "N/A";
+const CountryPage = () => {
+  const { code } = useParams();
+  const [country, setCountry] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCountry = async () => {
+      try {
+        const response = await axios.get(
+          `https://restcountries.com/v3.1/alpha/${code}`
+        );
+        if (response.data && response.data.length > 0) {
+          setCountry(response.data[0]);
+        } else {
+          setError("Country not found.");
+        }
+      } catch (err) {
+        setError("Failed to fetch country data.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (code) {
+      fetchCountry();
+    }
+  }, [code]);
+
+  if (loading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography color="error">{error}</Typography>;
+  if (!country) return <Typography>No country data found.</Typography>;
+
+  const flagUrl = country.flags?.png || country.flags?.svg || "";
 
   return (
-    <Card
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        justifyContent: "space-between",
-      }}
-    >
-      <CardMedia
-        component="img"
-        image={flag}
-        alt={commonName}
-        sx={{ height: 140, objectFit: "contain" }}
-      />
-      <CardContent
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h6"
-            component="div"
-            fontWeight="bold"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {commonName}
+    <Container sx={{ mt: 4 }}>
+      <Card>
+        {/* Flag Image */}
+        {flagUrl && (
+          <CardMedia
+            component="img"
+            height="200"
+            image={flagUrl}
+            alt={`${country.name?.common} flag`}
+            sx={{ objectFit: "contain", backgroundColor: "#f5f5f5" }}
+          />
+        )}
+
+        {/* Country Details */}
+        <CardContent>
+          <Typography variant="h4" gutterBottom>
+            {country.name?.common || "Unknown"}
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
+          <Typography>
+            <strong>Official Name:</strong>{" "}
+            {country.name?.official || "N/A"}
+          </Typography>
+          <Typography>
+            <strong>Capital:</strong> {country.capital?.[0] || "N/A"}
+          </Typography>
+          <Typography>
+            <strong>Region:</strong> {country.region || "N/A"}
+          </Typography>
+          <Typography>
+            <strong>Subregion:</strong> {country.subregion || "N/A"}
+          </Typography>
+          <Typography>
             <strong>Population:</strong>{" "}
-            {new Intl.NumberFormat().format(population)}
+            {country.population?.toLocaleString() || "N/A"}
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            <strong>Region:</strong> {region}
+          <Typography>
+            <strong>Languages:</strong>{" "}
+            {Object.values(country.languages || {}).join(", ") || "N/A"}
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            <strong>Languages:</strong> {languages}
+          <Typography>
+            <strong>Currencies:</strong>{" "}
+            {Object.keys(country.currencies || {}).join(", ") || "N/A"}
           </Typography>
-          <Typography variant="body2">
-            <strong>Capital:</strong> {capital}
+          <Typography>
+            <strong>Area:</strong> {country.area || "N/A"} km²
           </Typography>
-        </Box>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 
-export default CountryCard;
+export default CountryPage;

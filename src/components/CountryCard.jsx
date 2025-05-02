@@ -1,26 +1,80 @@
-import { Card, CardMedia, CardContent, Typography, CardActionArea } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { useNavigate } from "react-router-dom";
 
-export default function CountryCard({ country }) {
+const CountryCard = ({ country }) => {
   const navigate = useNavigate();
-  const { name, flags, capital, region, population } = country;
+
+  // Skip rendering if cca3 is missing
+  if (!country?.cca3) return null;
+
+  const commonName = country.name?.common || "Unknown";
+  const population = country.population || 0;
+  const region = country.region || "N/A";
+  const languages = country.languages
+    ? Object.values(country.languages).join(", ")
+    : "N/A";
+  const flag = country.flags?.png || country.flags?.svg || "";
+  const capital = country.capital?.[0] || "N/A";
 
   return (
-    <Card onClick={() => navigate(`/country/${name.common}`)}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image={flags.png}
-          alt={name.common}
-        />
-        <CardContent>
-          <Typography variant="h6">{name.common}</Typography>
-          <Typography>Capital: {capital?.[0]}</Typography>
-          <Typography>Region: {region}</Typography>
-          <Typography>Population: {population.toLocaleString()}</Typography>
-        </CardContent>
-      </CardActionArea>
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        justifyContent: "space-between",
+        cursor: "pointer",
+      }}
+      onClick={() => navigate(`/country/${country.cca3}`)}
+    >
+      <CardMedia
+        component="img"
+        image={flag}
+        alt={commonName}
+        sx={{ height: 140, objectFit: "contain" }}
+      />
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h6"
+            component="div"
+            fontWeight="bold"
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {commonName}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            <strong>Population:</strong> {new Intl.NumberFormat().format(population)}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            <strong>Region:</strong> {region}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            <strong>Languages:</strong> {languages}
+          </Typography>
+          <Typography variant="body2">
+            <strong>Capital:</strong> {capital}
+          </Typography>
+        </Box>
+      </CardContent>
     </Card>
   );
-}
+};
+
+export default CountryCard;

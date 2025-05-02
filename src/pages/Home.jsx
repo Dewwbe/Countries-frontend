@@ -37,48 +37,48 @@ const Home = () => {
   ];
 
   const fetchAllCountries = async () => {
-    const response = await axios.get("https://restcountries.com/v3.1/all");
+  const response = await axios.get("https://restcountries.com/v3.1/all ");
+  setCountries(response.data);
+};
+
+const fetchCountriesByName = async (name) => {
+  if (name.trim() === "") {
+    fetchAllCountries();
+    return;
+  }
+  try {
+    const response = await axios.get(`https://restcountries.com/v3.1/name/${name}`);
     setCountries(response.data);
-  };
+  } catch (err) {
+    setCountries([]);
+  }
+};
 
-  const fetchCountriesByName = async (name) => {
-    if (name.trim() === "") {
-      fetchAllCountries();
-      return;
-    }
-    try {
-      const response = await axios.get(`https://restcountries.com/v3.1/name/${name}`);
-      setCountries(response.data);
-    } catch (err) {
-      setCountries([]);
-    }
-  };
+const fetchCountriesByRegion = async (regionName) => {
+  if (!regionName) {
+    fetchAllCountries();
+    return;
+  }
+  try {
+    const response = await axios.get(`https://restcountries.com/v3.1/region/${regionName}`);
+    setCountries(response.data);
+  } catch (err) {
+    setCountries([]);
+  }
+};
 
-  const fetchCountriesByRegion = async (regionName) => {
-    if (!regionName) {
-      fetchAllCountries();
-      return;
-    }
-    try {
-      const response = await axios.get(`https://restcountries.com/v3.1/region/${regionName}`);
-      setCountries(response.data);
-    } catch (err) {
-      setCountries([]);
-    }
-  };
-
-  const fetchCountriesByLanguage = async (language) => {
-    if (!language) {
-      fetchAllCountries();
-      return;
-    }
-    try {
-      const response = await axios.get(`https://restcountries.com/v3.1/lang/${language}`);
-      setCountries(response.data);
-    } catch (err) {
-      setCountries([]);
-    }
-  };
+const fetchCountriesByLanguage = async (language) => {
+  if (!language) {
+    fetchAllCountries();
+    return;
+  }
+  try {
+    const response = await axios.get(`https://restcountries.com/v3.1/lang/${language}`);
+    setCountries(response.data);
+  } catch (err) {
+    setCountries([]);
+  }
+};
 
   const handleFilterChange = (e) => {
     const value = e.target.value;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Link } from '@mui/material';
 import axios from 'axios';
+import { LinearProgress, Stack } from '@mui/material';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -8,6 +9,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,15 +18,19 @@ const Register = () => {
       setError('Passwords do not match');
       return;
     }
-
+  
+    setLoading(true);
     try {
-    await axios.post('http://localhost:5555/api/users/register', { name, email, password });
-      window.location.href = '/'; // Redirect to login
+      await axios.post('http://localhost:5555/api/users/register', { name, email, password });
+      window.location.href = '/';
     } catch (err) {
-        console.log(err);
+      console.log(err);
       setError(err.response?.data.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <Box

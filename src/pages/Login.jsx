@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Link } from '@mui/material';
+import { Box, TextField, Button, Typography, Link, Stack, LinearProgress } from '@mui/material';
 import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // ✅ Added missing state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-        const response = await axios.post('http://localhost:5555/api/users/login', { email, password });
-        localStorage.setItem('token', response.data.token);        
-      window.location.href = '/home'; // Redirect to dashboard
+      const response = await axios.post('http://localhost:5555/api/users/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      window.location.href = '/home';
     } catch (err) {
-        console.log(err);
+      console.log(err);
       setError(err.response?.data.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,57 +46,30 @@ const Login = () => {
         <Typography variant="h4" fontWeight={700} color="white">
           Explore Countries with CountryRhymes
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/197/197471.png"
-            alt="Globe"
-            style={{ width: 30, height: 30 }}
-          />
-          <Typography variant="body1" color="white">
-            Discover detailed profiles of over 250+ countries
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/197/197471.png"
-            alt="Globe"
-            style={{ width: 30, height: 30 }}
-          />
-          <Typography variant="body1" color="white">
-            Compare demographics, currencies, and languages
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/197/197471.png"
-            alt="Globe"
-            style={{ width: 30, height: 30 }}
-          />
-          <Typography variant="body1" color="white">
-            Track favorite countries in your dashboard
-          </Typography>
-        </Box>
+        {[...Array(3)].map((_, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 2,
+            }}
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/197/197471.png"
+              alt="Globe"
+              style={{ width: 30, height: 30 }}
+            />
+            <Typography variant="body1" color="white">
+              {[
+                'Discover detailed profiles of over 250+ countries',
+                'Compare demographics, currencies, and languages',
+                'Track favorite countries in your dashboard',
+              ][index]}
+            </Typography>
+          </Box>
+        ))}
       </Box>
 
       {/* Right Side Form */}
@@ -111,6 +88,11 @@ const Login = () => {
           backgroundColor: 'rgba(255,255,255,0.9)',
         }}
       >
+        {loading && (
+          <Stack sx={{ width: '100%', mb: 2 }}>
+            <LinearProgress color="secondary" />
+          </Stack>
+        )}
         <Typography variant="h4" fontWeight={700} mb={3}>
           Sign In
         </Typography>
